@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roleta da Sorte | Açaiteria</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:linear-gradient(160deg,#26083e,#63258b,#35104f);
+ color:white;
+ min-height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ padding:25px;
+}
+.container{
+ width:100%;max-width:430px;text-align:center;
+}
+.logo{font-size:55px}
+h1{font-size:30px;margin:8px 0;color:#f5d5ff}
+.sub{color:#ead6f5;line-height:1.5}
+.card{
+ background:white;color:#39164e;border-radius:24px;
+ padding:25px;margin-top:25px;
+ box-shadow:0 15px 45px #17062580;
+}
+.wheel{
+ width:235px;height:235px;border-radius:50%;
+ margin:10px auto 25px;
+ border:9px solid #f5d5ff;
+ background:conic-gradient(
+ #ffcf4a 0deg 45deg,
+ #ec75bd 45deg 90deg,
+ #9b65df 90deg 135deg,
+ #64c8b0 135deg 180deg,
+ #ffcf4a 180deg 225deg,
+ #ec75bd 225deg 270deg,
+ #9b65df 270deg 315deg,
+ #64c8b0 315deg 360deg);
+ box-shadow:0 5px 20px #3b185b70;
+ position:relative;
+}
+.wheel:after{
+ content:"🍧";position:absolute;inset:0;
+ display:grid;place-items:center;
+ font-size:48px;background:#ffffff30;
+ border-radius:50%;
+}
+.pointer{
+ width:0;height:0;margin:0 auto -12px;
+ border-left:16px solid transparent;
+ border-right:16px solid transparent;
+ border-top:30px solid #f5b900;
+ position:relative;z-index:2;
+}
+input{
+ width:100%;padding:16px;border:2px solid #e3d2eb;
+ border-radius:12px;font-size:16px;
+ margin:12px 0;color:#39164e;
+}
+button{
+ width:100%;padding:16px;border:0;
+ border-radius:12px;background:#7028a0;
+ color:white;font-size:17px;font-weight:bold;
+}
+button:disabled{opacity:.55}
+.note{font-size:12px;color:#765c83;margin-top:18px}
+</style>
+</head>
+<body>
+<main class="container">
+ <div class="logo">🍧</div>
+ <h1>RODA DA SORTE!</h1>
+ <p class="sub">Comprou seu açaí? Você ganhou a chance de concorrer a prêmios!</p>
+
+ <section class="card">
+  <h2>🎁 Sua sorte está aqui!</h2>
+  <div class="pointer"></div>
+  <div class="wheel"></div>
+  <label for="codigo"><strong>Digite seu código da sorte:</strong></label>
+  <input id="codigo" placeholder="Ex.: ACAI-A82K91">
+  <button disabled>Roleta em preparação</button>
+  <p class="note">Em breve você poderá validar seu código e girar a roleta!</p>
+ </section>
+ <p class="sub">Boa sorte! 💜</p>
+</main>
+</body>
+</html>
