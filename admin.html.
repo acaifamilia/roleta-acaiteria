@@ -1,1 +1,187 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel Administrativo | Roleta</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;font-family:Arial,sans-serif;
+ background:linear-gradient(150deg,#26083e,#63258b,#35104f);
+ color:white;min-height:100vh
+}
+.container{max-width:700px;margin:auto}
+h1{text-align:center;color:#f5d5ff}
+.card{
+ background:white;color:#39164e;padding:22px;
+ border-radius:18px;margin:18px 0;
+ box-shadow:0 8px 25px #17062560
+}
+input,button{
+ width:100%;padding:14px;margin:7px 0;
+ border-radius:10px;font-size:16px
+}
+input{border:1px solid #d8c5e5}
+button{
+ border:0;background:#7028a0;color:white;
+ font-weight:bold;cursor:pointer
+}
+button:hover{background:#541b7d}
+#painel{display:none}
+#mensagem{font-weight:bold;white-space:pre-wrap}
+.codigo{font-size:23px;font-weight:bold;color:#7028a0}
+table{width:100%;border-collapse:collapse;color:#39164e}
+td,th{padding:10px;border-bottom:1px solid #eadff0;text-align:left}
+.tabela{overflow-x:auto}
+.pequeno{font-size:13px;color:#765c83}
+</style>
+</head>
+<body>
+<main class="container">
+<h1>🍧 Painel da Roleta</h1>
+
+<section class="card" id="login">
+<h2>🔐 Acesso administrativo</h2>
+<input id="senha" type="password" placeholder="Sua senha de administrador">
+<button onclick="entrar()">Entrar</button>
+</section>
+
+<section id="painel">
+<div class="card">
+<h2>🎁 Cadastrar cliente</h2>
+<input id="nome" placeholder="Nome do cliente">
+<input id="telefone" type="tel" placeholder="Telefone do cliente">
+<button onclick="gerar()">Gerar código da sorte</button>
+<div id="resultado"></div>
+</div>
+
+<div class="card">
+<h2>📋 Clientes e códigos</h2>
+<button onclick="carregar()">Atualizar lista</button>
+<div class="tabela">
+<table>
+<thead><tr>
+<th>Cliente</th><th>Telefone</th><th>Código</th><th>Status</th>
+</tr></thead>
+<tbody id="lista"></tbody>
+</table>
+</div>
+<p class="pequeno">Os códigos usados aparecem identificados na lista.</p>
+</div>
+
+<button onclick="sair()">Sair do painel</button>
+</section>
+
+<p id="mensagem"></p>
+</main>
+
+<script>
+let token = "";
+
+async function requisicao(url, opcoes = {}) {
+  const resposta = await fetch(url, {
+    ...opcoes,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? {"Authorization": "Bearer " + token} : {}),
+      ...(opcoes.headers || {})
+    }
+  });
+
+  const dados = await resposta.json();
+  if (!resposta.ok) throw new Error(dados.erro || "Erro na operação");
+  return dados;
+}
+
+async function entrar() {
+  const senha = document.getElementById("senha").value;
+  const mensagem = document.getElementById("mensagem");
+
+  try {
+    const dados = await requisicao("/api/admin/login", {
+      method: "POST",
+      body: JSON.stringify({senha})
+    });
+
+    token = dados.token;
+    document.getElementById("login").style.display = "none";
+    document.getElementById("painel").style.display = "block";
+    mensagem.textContent = "Acesso autorizado!";
+    carregar();
+  } catch (erro) {
+    mensagem.textContent = erro.message;
+  }
+}
+
+async function gerar() {
+  const nome = document.getElementById("nome").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  const resultado = document.getElementById("resultado");
+
+  if (!nome || !telefone) {
+    resultado.textContent = "Preencha o nome e o telefone.";
+    return;
+  }
+
+  try {
+    const dados = await requisicao("/api/admin/clientes", {
+      method: "POST",
+      body: JSON.stringify({nome, telefone})
+    });
+
+    resultado.innerHTML = "";
+    const titulo = document.createElement("p");
+    titulo.textContent = "Código gerado com sucesso!";
+    const codigo = document.createElement("p");
+    codigo.className = "codigo";
+    codigo.textContent = dados.codigo;
+    const aviso = document.createElement("p");
+    aviso.textContent = "Entregue este código ao cliente.";
+    resultado.append(titulo, codigo, aviso);
+
+    document.getElementById("nome").value = "";
+    document.getElementById("telefone").value = "";
+    carregar();
+  } catch (erro) {
+    resultado.textContent = erro.message;
+  }
+}
+
+async function carregar() {
+  const lista = document.getElementById("lista");
+  lista.textContent = "";
+
+  try {
+    const clientes = await requisicao("/api/admin/clientes");
+
+    clientes.forEach(cliente => {
+      const linha = document.createElement("tr");
+      [
+        cliente.nome,
+        cliente.telefone,
+        cliente.codigo || "—",
+        cliente.usado ? "Utilizado" : "Disponível"
+      ].forEach(valor => {
+        const celula = document.createElement("td");
+        celula.textContent = valor ?? "";
+        linha.appendChild(celula);
+      });
+      lista.appendChild(linha);
+    });
+  } catch (erro) {
+    document.getElementById("mensagem").textContent = erro.message;
+  }
+}
+
+function sair() {
+  token = "";
+  document.getElementById("painel").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  document.getElementById("senha").value = "";
+  document.getElementById("mensagem").textContent = "Você saiu do painel.";
+}
+</script>
+</body>
+</html>
