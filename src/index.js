@@ -126,9 +126,16 @@ export default {
 
       if (!codigo) return resposta({ erro: "Digite seu código" }, 400);
 
-      const premio = PREMIOS[
-        crypto.getRandomValues(new Uint32Array(1))[0] % PREMIOS.length
-      ];
+      
+const totalPeso = PREMIOS.reduce((total, item) => total + item.peso, 0);
+
+const numero = crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * totalPeso;
+
+let acumulado = 0;
+const premio = PREMIOS.find(item => {
+  acumulado += item.peso;
+  return numero < acumulado;
+}).nome;
 
       const resultado = await env.DB.prepare(`
         UPDATE codigos
