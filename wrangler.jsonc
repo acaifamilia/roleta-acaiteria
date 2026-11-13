@@ -1,0 +1,15 @@
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "roleta-acaiteria",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-12",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "roleta-db",
+      "database_id": "COLOCAREMOS_O_ID_AQUI"
+    }
+  ]
+}
