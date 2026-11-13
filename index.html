@@ -11,51 +11,65 @@ body{
  margin:0;font-family:Arial,sans-serif;
  background:linear-gradient(160deg,#26083e,#63258b,#35104f);
  color:white;min-height:100vh;display:flex;
- justify-content:center;align-items:center;padding:25px
+ justify-content:center;align-items:center;padding:20px
 }
-.container{width:100%;max-width:430px;text-align:center}
-.logo{font-size:55px}
+.container{width:100%;max-width:460px;text-align:center}
+.logo{font-size:52px}
 h1{font-size:30px;margin:8px 0;color:#f5d5ff}
 .sub{color:#ead6f5;line-height:1.5}
 .card{
  background:white;color:#39164e;border-radius:24px;
- padding:25px;margin-top:25px;
+ padding:22px 18px;margin-top:22px;
  box-shadow:0 15px 45px #17062580
 }
-.wheel{
- width:235px;height:235px;border-radius:50%;
- margin:10px auto 25px;border:9px solid #f5d5ff;
- background:conic-gradient(
- #ffcf4a 0deg 45deg,#ec75bd 45deg 90deg,
- #9b65df 90deg 135deg,#64c8b0 135deg 180deg,
- #ffcf4a 180deg 225deg,#ec75bd 225deg 270deg,
- #9b65df 270deg 315deg,#64c8b0 315deg 360deg);
- box-shadow:0 5px 20px #3b185b70;
- position:relative;transition:transform 4s cubic-bezier(.12,.75,.15,1)
+h2{font-size:21px}
+.wheel-area{
+ width:min(310px,85vw);height:min(310px,85vw);
+ margin:35px auto 25px;position:relative
 }
-.wheel:after{
- content:"🍧";position:absolute;inset:0;
- display:grid;place-items:center;font-size:48px;
- background:#ffffff30;border-radius:50%
+.wheel{
+ width:100%;height:100%;border-radius:50%;
+ border:9px solid #f5d5ff;
+ box-shadow:0 5px 25px #3b185b70;
+ overflow:hidden;
+ transition:transform 5s cubic-bezier(.12,.75,.15,1);
+ background:#fff
+}
+.wheel svg{width:100%;height:100%;display:block}
+.center{
+ position:absolute;top:50%;left:50%;
+ transform:translate(-50%,-50%);
+ width:58px;height:58px;border-radius:50%;
+ background:#fff;border:5px solid #f5c84b;
+ display:grid;place-items:center;font-size:29px;
+ box-shadow:0 2px 9px #35104f70;
+ pointer-events:none
 }
 .pointer{
- width:0;height:0;margin:0 auto -12px;
- border-left:16px solid transparent;
- border-right:16px solid transparent;
- border-top:30px solid #f5b900;position:relative;z-index:2
+ position:absolute;top:-17px;left:50%;
+ transform:translateX(-50%);z-index:5;
+ width:0;height:0;
+ border-left:19px solid transparent;
+ border-right:19px solid transparent;
+ border-top:35px solid #f5b900;
+ filter:drop-shadow(0 3px 2px #35104f80)
 }
+label{display:block;margin-top:10px}
 input{
  width:100%;padding:16px;border:2px solid #e3d2eb;
  border-radius:12px;font-size:16px;margin:12px 0;color:#39164e
 }
 button{
  width:100%;padding:16px;border:0;border-radius:12px;
- background:#7028a0;color:white;font-size:17px;font-weight:bold;
- cursor:pointer
+ background:#7028a0;color:white;font-size:17px;
+ font-weight:bold;cursor:pointer
 }
 button:disabled{opacity:.55;cursor:not-allowed}
 .note{font-size:12px;color:#765c83;margin-top:18px}
-#resultado{font-weight:bold;font-size:19px;margin-top:18px;white-space:pre-wrap}
+#resultado{
+ font-weight:bold;font-size:20px;margin-top:18px;
+ white-space:pre-wrap;line-height:1.5
+}
 </style>
 </head>
 <body>
@@ -63,22 +77,93 @@ button:disabled{opacity:.55;cursor:not-allowed}
  <div class="logo">🍧</div>
  <h1>RODA DA SORTE!</h1>
  <p class="sub">Comprou seu açaí? Você ganhou a chance de concorrer a prêmios!</p>
+
  <section class="card">
   <h2>🎁 Sua sorte está aqui!</h2>
-  <div class="pointer"></div>
-  <div class="wheel" id="roleta"></div>
+
+  <div class="wheel-area">
+   <div class="pointer"></div>
+   <div class="wheel" id="roleta">
+    <svg id="desenho" viewBox="0 0 400 400"></svg>
+   </div>
+   <div class="center">🍧</div>
+  </div>
+
   <label for="codigo"><strong>Digite seu código da sorte:</strong></label>
   <input id="codigo" placeholder="Ex.: ACAI-A82K91" autocomplete="off">
+
   <button id="botao" onclick="girar()">GIRAR A ROLETA!</button>
   <p id="resultado" role="status"></p>
   <p class="note">Cada código dá direito a apenas uma tentativa.</p>
  </section>
+
  <p class="sub">Boa sorte! 💜</p>
 </main>
 
 <script>
+const PREMIOS = [
+ {nome:"10% de desconto", peso:30, texto:"10% OFF", cor:"#f2b936"},
+ {nome:"Açaí pequeno grátis", peso:5, texto:"AÇAÍ GRÁTIS", cor:"#df65ad"},
+ {nome:"Adicional grátis", peso:25, texto:"ADICIONAL GRÁTIS", cor:"#8050bd"},
+ {nome:"R$ 5 de desconto", peso:25, texto:"R$ 5 OFF", cor:"#42ad9b"},
+ {nome:"Tente novamente", peso:15, texto:"TENTE NOVAMENTE", cor:"#c75b79"}
+];
+
 let girando = false;
 let rotacao = 0;
+
+function ponto(angulo, raio){
+ const rad = angulo * Math.PI / 180;
+ return {
+  x:200 + raio * Math.cos(rad),
+  y:200 + raio * Math.sin(rad)
+ };
+}
+
+function desenharRoleta(){
+ const svg = document.getElementById("desenho");
+ const total = PREMIOS.reduce((s,p)=>s+p.peso,0);
+ let inicio = -90;
+ let desenho = "";
+
+ PREMIOS.forEach(p=>{
+  const tamanho = p.peso / total * 360;
+  const fim = inicio + tamanho;
+  const meio = inicio + tamanho / 2;
+
+  const a = ponto(inicio,190);
+  const b = ponto(fim,190);
+  const grande = tamanho > 180 ? 1 : 0;
+
+  desenho += `
+   <path d="M 200 200 L ${a.x} ${a.y}
+    A 190 190 0 ${grande} 1 ${b.x} ${b.y} Z"
+    fill="${p.cor}" stroke="#fff" stroke-width="3"/>
+  `;
+
+  const pos = ponto(meio,145);
+  let inclinacao = meio + 90;
+  inclinacao = ((inclinacao % 360) + 360) % 360;
+  if(inclinacao > 90 && inclinacao < 270) inclinacao += 180;
+
+  const tamanhoFonte = p.peso === 5 ? 8 : 11;
+
+  desenho += `
+   <text x="${pos.x}" y="${pos.y}"
+    transform="rotate(${inclinacao} ${pos.x} ${pos.y})"
+    text-anchor="middle" dominant-baseline="middle"
+    font-size="${tamanhoFonte}" font-weight="bold"
+    fill="white" stroke="#35104f" stroke-width="2"
+    paint-order="stroke">${p.texto}</text>
+  `;
+
+  inicio = fim;
+ });
+
+ svg.innerHTML = desenho;
+}
+
+desenharRoleta();
 
 async function girar(){
  if(girando) return;
@@ -113,11 +198,32 @@ async function girar(){
    throw new Error(dados.erro || "Não foi possível validar o código.");
   }
 
+  const indice = PREMIOS.findIndex(p=>p.nome === dados.premio);
+
+  if(indice === -1){
+   throw new Error("Prêmio recebido não corresponde às fatias da roleta.");
+  }
+
+  const total = PREMIOS.reduce((s,p)=>s+p.peso,0);
+  let inicio = -90;
+
+  for(let i=0;i<indice;i++){
+   inicio += PREMIOS[i].peso / total * 360;
+  }
+
+  const tamanho = PREMIOS[indice].peso / total * 360;
+  const meio = inicio + tamanho/2;
+
+  const desejado = -90 - meio;
+  const atual = ((rotacao % 360) + 360) % 360;
+  const ajuste = ((desejado - atual) % 360 + 360) % 360;
+
+  rotacao += 1800 + ajuste;
+
   botao.textContent = "BOA SORTE!";
-  rotacao += 1800 + Math.floor(Math.random()*360);
   roleta.style.transform = "rotate(" + rotacao + "deg)";
 
-  await new Promise(resolve => setTimeout(resolve,4100));
+  await new Promise(resolve=>setTimeout(resolve,5200));
 
   resultado.textContent = "🎉 SEU PRÊMIO:\n" + dados.premio;
   campo.disabled = true;
@@ -133,3 +239,4 @@ async function girar(){
 </script>
 </body>
 </html>
+
