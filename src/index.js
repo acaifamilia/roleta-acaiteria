@@ -1,10 +1,11 @@
 
+ 
 const PREMIOS = [
-  "10% de desconto",
-  "Açaí pequeno grátis",
-  "Adicional grátis",
-  "R$ 5 de desconto",
-  "Tente novamente"
+  { nome: "10% de desconto", peso: 30 },
+  { nome: "Açaí pequeno grátis", peso: 5 },
+  { nome: "Adicional grátis", peso: 25 },
+  { nome: "R$ 5 de desconto", peso: 25 },
+  { nome: "Tente novamente", peso: 15 }
 ];
 
 function resposta(dados, status = 200) {
