@@ -145,4 +145,4 @@ export default {
       return resposta({ sucesso: true, premio: resultado.premio });
     }
 
-     return env.ASSETS.fetch(request);
+     return env.ASSETS.fetch(request)
