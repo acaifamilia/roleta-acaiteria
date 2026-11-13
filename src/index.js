@@ -145,6 +145,8 @@ export default {
       return resposta({ sucesso: true, premio: resultado.premio });
     }
 
-    return resposta({ erro: "Página não encontrada" }, 404);
+     return env.ASSETS.fetch(request);
+  }
+};
   }
 };
