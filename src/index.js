@@ -1,10 +1,10 @@
 
  
-const PREMIOS = [
+ const PREMIOS = [
   { nome: "10% de desconto", peso: 30 },
+  { nome: "R$ 10 de desconto", peso: 25 },
   { nome: "Açaí pequeno grátis", peso: 5 },
   { nome: "Adicional grátis", peso: 25 },
-  { nome: "R$ 5 de desconto", peso: 25 },
   { nome: "Tente novamente", peso: 15 }
 ];
 
