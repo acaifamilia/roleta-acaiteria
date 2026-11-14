@@ -1,8 +1,8 @@
  
 const PREMIOS = [
   { nome: "10% de desconto", peso: 20 },
-  { nome: "Açaí pequeno grátis", peso: 20 },
-  { nome: "Adicional grátis", peso: 20 },
+  { nome: "Açaí grátis 300ml com leite em pó", peso: 20 },
+  { nome: "Entrega grátis", peso: 20 },
   { nome: "R$ 10 de desconto", peso: 20 },
   { nome: "Tente novamente", peso: 20 }
 ];
@@ -185,4 +185,3 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
-
