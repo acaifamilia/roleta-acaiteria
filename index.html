@@ -4,239 +4,560 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roleta da Sorte | Açaiteria</title>
+<title>Roleta Premiada | Açaí da Família Castro</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;font-family:Arial,sans-serif;
- background:linear-gradient(160deg,#26083e,#63258b,#35104f);
- color:white;min-height:100vh;display:flex;
- justify-content:center;align-items:center;padding:20px
+ margin:0;
+ font-family:Arial,sans-serif;
+ color:white;
+ min-height:100vh;
+ background:
+ radial-gradient(ellipse at 50% 20%,#65218b 0%,transparent 48%),
+ linear-gradient(150deg,#160321,#310b49,#190522);
+ overflow-x:hidden;
+ padding:20px 12px 35px;
 }
-.container{width:100%;max-width:460px;text-align:center}
-.logo{font-size:52px}
-h1{font-size:30px;margin:8px 0;color:#f5d5ff}
-.sub{color:#ead6f5;line-height:1.5}
+
+.container{
+ width:100%;
+ max-width:480px;
+ margin:auto;
+ text-align:center;
+}
+
+.topo{
+ padding:12px 5px 5px;
+}
+
+.marca{
+ font-size:clamp(30px,8vw,43px);
+ font-weight:1000;
+ color:#ffd34e;
+ text-shadow:0 3px 0 #70218d,0 0 18px #ffca45;
+ line-height:1.1;
+}
+
+.slogan{
+ font-size:15px;
+ color:#fff0c9;
+ font-style:italic;
+ margin-top:10px;
+}
+
+.titulo{
+ margin:22px 0 5px;
+ font-size:clamp(38px,10vw,53px);
+ font-weight:1000;
+ line-height:1;
+ color:white;
+ text-shadow:3px 4px 0 #54106e,0 0 15px #d99bff;
+}
+
+.titulo span{
+ display:block;
+ color:#ffbd19;
+ font-size:1.05em;
+ text-shadow:3px 4px 0 #773000,0 0 18px #ffae00;
+}
+
+.subtitulo{
+ font-size:15px;
+ line-height:1.5;
+ color:white;
+ margin:15px auto 18px;
+ max-width:390px;
+}
+
+.faixa{
+ background:linear-gradient(90deg,#6b1592,#310849,#6b1592);
+ border:2px solid #e6b7ff;
+ border-radius:40px;
+ padding:13px 10px;
+ font-size:21px;
+ font-weight:bold;
+ color:white;
+ box-shadow:0 5px 15px #0006;
+ margin-bottom:12px;
+}
+
 .card{
- background:white;color:#39164e;border-radius:24px;
- padding:22px 18px;margin-top:22px;
- box-shadow:0 15px 45px #17062580
+ background:linear-gradient(150deg,#35104b,#1d092b);
+ border:2px solid #dba83d;
+ border-radius:28px;
+ padding:20px 13px;
+ box-shadow:0 0 22px #dca43c40,0 15px 35px #0008;
 }
-h2{font-size:21px}
+
+h2{
+ color:#ffdc7b;
+ font-size:23px;
+ margin:4px 0 0;
+}
+
 .wheel-area{
- width:min(310px,85vw);height:min(310px,85vw);
- margin:35px auto 25px;position:relative
+ width:min(350px,85vw);
+ height:min(350px,85vw);
+ margin:35px auto 30px;
+ position:relative;
 }
+
+.wheel-border{
+ position:absolute;
+ inset:-10px;
+ border-radius:50%;
+ background:linear-gradient(135deg,#fff2a1,#e8a51c,#fff0a0,#bd7910);
+ box-shadow:0 0 12px #ffdf79,0 0 28px #ffba36;
+}
+
 .wheel{
- width:100%;height:100%;border-radius:50%;
- border:9px solid #f5d5ff;
- box-shadow:0 5px 25px #3b185b70;
+ position:absolute;
+ inset:0;
+ border-radius:50%;
+ border:5px solid #fff0a0;
  overflow:hidden;
+ background:#fff;
  transition:transform 5s cubic-bezier(.12,.75,.15,1);
- background:#fff
+ z-index:2;
 }
-.wheel svg{width:100%;height:100%;display:block}
-.center{
- position:absolute;top:50%;left:50%;
- transform:translate(-50%,-50%);
- width:58px;height:58px;border-radius:50%;
- background:#fff;border:5px solid #f5c84b;
- display:grid;place-items:center;font-size:29px;
- box-shadow:0 2px 9px #35104f70;
- pointer-events:none
+
+.wheel svg{
+ width:100%;
+ height:100%;
+ display:block;
 }
+
 .pointer{
- position:absolute;top:-17px;left:50%;
- transform:translateX(-50%);z-index:5;
- width:0;height:0;
- border-left:19px solid transparent;
- border-right:19px solid transparent;
- border-top:35px solid #f5b900;
- filter:drop-shadow(0 3px 2px #35104f80)
+ position:absolute;
+ top:-21px;
+ left:50%;
+ transform:translateX(-50%);
+ z-index:6;
+ width:0;
+ height:0;
+ border-left:22px solid transparent;
+ border-right:22px solid transparent;
+ border-top:43px solid #ffcb34;
+ filter:drop-shadow(0 3px 4px #000);
 }
-label{display:block;margin-top:10px}
+
+.center{
+ position:absolute;
+ top:50%;
+ left:50%;
+ transform:translate(-50%,-50%);
+ width:83px;
+ height:83px;
+ border-radius:50%;
+ background:linear-gradient(145deg,#fff4c4,#dba52e);
+ border:5px solid white;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ z-index:4;
+ color:#46145c;
+ box-shadow:0 0 15px #ffd96d;
+ line-height:1.05;
+}
+
+.center .emoji{
+ font-size:23px;
+}
+
+.center strong{
+ font-size:9px;
+ font-weight:1000;
+}
+
+.codigo-box{
+ margin-top:18px;
+ padding:16px 12px;
+ border:2px solid #a83bd1;
+ border-radius:24px;
+ background:linear-gradient(145deg,#280a3c,#190523);
+ box-shadow:0 0 15px #a83bd150;
+}
+
+label{
+ display:block;
+ font-size:18px;
+ font-weight:bold;
+ color:white;
+ margin-bottom:12px;
+}
+
 input{
- width:100%;padding:16px;border:2px solid #e3d2eb;
- border-radius:12px;font-size:16px;margin:12px 0;color:#39164e
+ width:100%;
+ padding:16px 14px;
+ border:2px solid #e5d6f0;
+ border-radius:15px;
+ background:#fffaff;
+ color:#351044;
+ font-size:18px;
+ font-weight:bold;
+ outline:none;
+ text-align:center;
 }
+
+input:focus{
+ border-color:#ffcc43;
+ box-shadow:0 0 10px #ffca44;
+}
+
+input::placeholder{
+ color:#a49aa9;
+}
+
 button{
- width:100%;padding:16px;border:0;border-radius:12px;
- background:#7028a0;color:white;font-size:17px;
- font-weight:bold;cursor:pointer
+ width:100%;
+ padding:17px 10px;
+ margin-top:14px;
+ border:2px solid #ffe58a;
+ border-radius:50px;
+ background:linear-gradient(180deg,#ffdc48,#ffad00);
+ color:#421052;
+ font-size:clamp(18px,5vw,25px);
+ font-weight:1000;
+ cursor:pointer;
+ box-shadow:0 5px 0 #a76500,0 8px 20px #0006;
+ text-shadow:0 1px 0 #fff4b4;
 }
-button:disabled{opacity:.55;cursor:not-allowed}
-.note{font-size:12px;color:#765c83;margin-top:18px}
+
+button:active{
+ transform:translateY(3px);
+ box-shadow:0 2px 0 #a76500;
+}
+
+button:disabled{
+ opacity:.6;
+ cursor:not-allowed;
+}
+
 #resultado{
- font-weight:bold;font-size:20px;margin-top:18px;
- white-space:pre-wrap;line-height:1.5
+ font-size:21px;
+ font-weight:1000;
+ color:#ffdc67;
+ line-height:1.5;
+ white-space:pre-wrap;
+ margin-top:18px;
+}
+
+.note{
+ color:#e7c9f2;
+ font-size:12px;
+ margin-top:17px;
+}
+
+.rodape{
+ margin-top:22px;
+ font-size:14px;
+ color:#f5d7ff;
+}
+
+@media(max-width:360px){
+ .card{padding:17px 10px}
+ h2{font-size:20px}
+ label{font-size:16px}
+ .wheel-area{
+  width:80vw;
+  height:80vw;
+ }
 }
 </style>
 </head>
+
 <body>
 <main class="container">
- <div class="logo">🍧</div>
- <h1>RODA DA SORTE!</h1>
- <p class="sub">Comprou seu açaí? Você ganhou a chance de concorrer a prêmios!</p>
+
+ <header class="topo">
+  <div class="marca">🍇 Açaí da Família Castro</div>
+  <div class="slogan">Sempre mais perto de você! 💛</div>
+ </header>
+
+ <h1 class="titulo">
+  ROLETA
+  <span>PREMIADA</span>
+ </h1>
+
+ <p class="subtitulo">
+  Compre seu açaí? Você ganhou a chance de concorrer a prêmios!
+ </p>
+
+ <div class="faixa">
+  🎁 Sua sorte está aqui!
+ </div>
 
  <section class="card">
-  <h2>🎁 Sua sorte está aqui!</h2>
+
+  <h2>✨ Gire e descubra seu prêmio! ✨</h2>
 
   <div class="wheel-area">
+   <div class="wheel-border"></div>
    <div class="pointer"></div>
+
    <div class="wheel" id="roleta">
     <svg id="desenho" viewBox="0 0 400 400"></svg>
    </div>
-   <div class="center">🍧</div>
+
+   <div class="center">
+    <span class="emoji">🍧</span>
+    <strong>AÇAÍ DA<br>FAMÍLIA</strong>
+   </div>
   </div>
 
-  <label for="codigo"><strong>Digite seu código da sorte:</strong></label>
-  <input id="codigo" placeholder="Ex.: ACAI-A82K91" autocomplete="off">
+  <div class="codigo-box">
+   <label for="codigo">
+    🎟️ Digite seu código da sorte:
+   </label>
 
-  <button id="botao" onclick="girar()">GIRAR A ROLETA!</button>
+   <input
+    id="codigo"
+    placeholder="Ex.: ACAI-A82K91"
+    autocomplete="off"
+    maxlength="20"
+   >
+  </div>
+
+  <button id="botao" onclick="girar()">
+   ▶ GIRAR A ROLETA!
+  </button>
+
   <p id="resultado" role="status"></p>
-  <p class="note">Cada código dá direito a apenas uma tentativa.</p>
+
+  <p class="note">
+   🔒 Cada código dá direito a apenas uma tentativa.
+  </p>
+
  </section>
 
- <p class="sub">Boa sorte! 💜</p>
+ <footer class="rodape">
+  Obrigado pela preferência! 💜<br>
+  Açaí da Família Castro
+ </footer>
+
 </main>
 
 <script>
-  const PREMIOS = [
- {nome:"10% de desconto",peso:30,texto:"10% OFF",cor:"#f2b936"},
- {nome:"R$ 10 de desconto",peso:25,texto:"R$ 10 OFF",cor:"#df65ad"},
- {nome:"Açaí pequeno grátis",peso:5,texto:"AÇAÍ GRÁTIS",cor:"#8050bd"},
- {nome:"Adicional grátis",peso:25,texto:"EXTRA GRÁTIS",cor:"#42ad9b"},
- {nome:"Tente novamente",peso:15,texto:"TENTE DE NOVO",cor:"#c75b79"}
+const PREMIOS = [
+ {
+  nome:"10% de desconto",
+  peso:30,
+  texto:"10% OFF",
+  icone:"🏷️",
+  cor:"#f2b936"
+ },
+ {
+  nome:"Açaí pequeno grátis",
+  peso:5,
+  texto:"AÇAÍ",
+  icone:"🍧",
+  cor:"#df3296"
+ },
+ {
+  nome:"Adicional grátis",
+  peso:25,
+  texto:"EXTRA GRÁTIS",
+  icone:"🎁",
+  cor:"#7829a9"
+ },
+ {
+  nome:"R$ 10 de desconto",
+  peso:25,
+  texto:"R$ 10 OFF",
+  icone:"💰",
+  cor:"#18a92f"
+ },
+ {
+  nome:"Tente novamente",
+  peso:15,
+  texto:"TENTE DE NOVO",
+  icone:"🔄",
+  cor:"#7726a2"
+ }
 ];
 
 let girando = false;
 let rotacao = 0;
 
-function ponto(angulo, raio){
- const rad = angulo * Math.PI / 180;
+function ponto(angulo,raio){
+ const rad=angulo*Math.PI/180;
  return {
-  x:200 + raio * Math.cos(rad),
-  y:200 + raio * Math.sin(rad)
+  x:200+raio*Math.cos(rad),
+  y:200+raio*Math.sin(rad)
  };
 }
 
 function desenharRoleta(){
- const svg = document.getElementById("desenho");
- const total = PREMIOS.reduce((s,p)=>s+p.peso,0);
- let inicio = -90;
- let desenho = "";
+
+ const svg=document.getElementById("desenho");
+ const total=PREMIOS.reduce((s,p)=>s+p.peso,0);
+
+ let inicio=-90;
+ let desenho="";
 
  PREMIOS.forEach(p=>{
-  const tamanho = p.peso / total * 360;
-  const fim = inicio + tamanho;
-  const meio = inicio + tamanho / 2;
 
-  const a = ponto(inicio,190);
-  const b = ponto(fim,190);
-  const grande = tamanho > 180 ? 1 : 0;
+  const tamanho=p.peso/total*360;
+  const fim=inicio+tamanho;
+  const meio=inicio+tamanho/2;
 
-  desenho += `
-   <path d="M 200 200 L ${a.x} ${a.y}
+  const a=ponto(inicio,190);
+  const b=ponto(fim,190);
+  const grande=tamanho>180?1:0;
+
+  desenho+=`
+   <path
+    d="M 200 200 L ${a.x} ${a.y}
     A 190 190 0 ${grande} 1 ${b.x} ${b.y} Z"
-    fill="${p.cor}" stroke="#fff" stroke-width="3"/>
+    fill="${p.cor}"
+    stroke="#fff"
+    stroke-width="4"
+   />
   `;
 
-  const pos = ponto(meio,145);
-  let inclinacao = meio + 90;
-  inclinacao = ((inclinacao % 360) + 360) % 360;
-  if(inclinacao > 90 && inclinacao < 270) inclinacao += 180;
+  const pos=ponto(meio,132);
 
-  const tamanhoFonte = p.peso === 5 ? 8 : 11;
+  let inclinacao=meio+90;
+  inclinacao=((inclinacao%360)+360)%360;
 
-  desenho += `
-   <text x="${pos.x}" y="${pos.y}"
+  if(inclinacao>90&&inclinacao<270){
+   inclinacao+=180;
+  }
+
+  const fonte=p.peso===5?17:19;
+
+  desenho+=`
+   <text
+    x="${pos.x}"
+    y="${pos.y-13}"
     transform="rotate(${inclinacao} ${pos.x} ${pos.y})"
-    text-anchor="middle" dominant-baseline="middle"
-    font-size="${tamanhoFonte}" font-weight="bold"
-    fill="white" stroke="#35104f" stroke-width="2"
-    paint-order="stroke">${p.texto}</text>
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="15"
+    font-weight="bold"
+    fill="#fff"
+   >${p.icone}</text>
+
+   <text
+    x="${pos.x}"
+    y="${pos.y+13}"
+    transform="rotate(${inclinacao} ${pos.x} ${pos.y})"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-size="${fonte}"
+    font-weight="900"
+    fill="#fff"
+    stroke="#35104f"
+    stroke-width="1.5"
+    paint-order="stroke"
+   >${p.texto}</text>
   `;
 
-  inicio = fim;
+  inicio=fim;
  });
 
- svg.innerHTML = desenho;
+ svg.innerHTML=desenho;
 }
 
 desenharRoleta();
 
 async function girar(){
- if(girando) return;
 
- const campo = document.getElementById("codigo");
- const botao = document.getElementById("botao");
- const resultado = document.getElementById("resultado");
- const roleta = document.getElementById("roleta");
- const codigo = campo.value.trim().toUpperCase();
+ if(girando)return;
+
+ const campo=document.getElementById("codigo");
+ const botao=document.getElementById("botao");
+ const resultado=document.getElementById("resultado");
+ const roleta=document.getElementById("roleta");
+
+ const codigo=campo.value.trim().toUpperCase();
 
  if(!codigo){
-  resultado.textContent = "Digite seu código da sorte.";
+  resultado.textContent="Digite seu código da sorte!";
   campo.focus();
   return;
  }
 
- girando = true;
- botao.disabled = true;
- botao.textContent = "VALIDANDO CÓDIGO...";
- resultado.textContent = "";
+ girando=true;
+ botao.disabled=true;
+ botao.textContent="VALIDANDO CÓDIGO...";
+ resultado.textContent="";
 
  try{
-  const resposta = await fetch("/api/roleta/girar",{
+
+  const resposta=await fetch("/api/roleta/girar",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({codigo})
   });
 
-  const dados = await resposta.json();
+  const dados=await resposta.json();
 
   if(!resposta.ok){
-   throw new Error(dados.erro || "Não foi possível validar o código.");
+   throw new Error(
+    dados.erro||"Não foi possível validar seu código."
+   );
   }
 
-  const indice = PREMIOS.findIndex(p=>p.nome === dados.premio);
+  const indice=PREMIOS.findIndex(
+   p=>p.nome===dados.premio
+  );
 
-  if(indice === -1){
-   throw new Error("Prêmio recebido não corresponde às fatias da roleta.");
+  if(indice===-1){
+   throw new Error(
+    "Prêmio não encontrado na roleta."
+   );
   }
 
-  const total = PREMIOS.reduce((s,p)=>s+p.peso,0);
-  let inicio = -90;
+  const total=PREMIOS.reduce(
+   (s,p)=>s+p.peso,0
+  );
+
+  let inicio=-90;
 
   for(let i=0;i<indice;i++){
-   inicio += PREMIOS[i].peso / total * 360;
+   inicio+=PREMIOS[i].peso/total*360;
   }
 
-  const tamanho = PREMIOS[indice].peso / total * 360;
-  const meio = inicio + tamanho/2;
+  const tamanho=PREMIOS[indice].peso/total*360;
+  const meio=inicio+tamanho/2;
 
-  const desejado = -90 - meio;
-  const atual = ((rotacao % 360) + 360) % 360;
-  const ajuste = ((desejado - atual) % 360 + 360) % 360;
+  const desejado=-90-meio;
+  const atual=((rotacao%360)+360)%360;
 
-  rotacao += 1800 + ajuste;
+  const ajuste=(
+   (desejado-atual)%360+360
+  )%360;
 
-  botao.textContent = "BOA SORTE!";
-  roleta.style.transform = "rotate(" + rotacao + "deg)";
+  rotacao+=1800+ajuste;
+
+  botao.textContent="BOA SORTE! 🍀";
+
+  roleta.style.transform=
+   "rotate("+rotacao+"deg)";
 
   await new Promise(resolve=>setTimeout(resolve,5200));
 
-  resultado.textContent = "🎉 SEU PRÊMIO:\n" + dados.premio;
-  campo.disabled = true;
-  botao.textContent = "CÓDIGO JÁ UTILIZADO";
+  resultado.textContent=
+   "🎉 PARABÉNS! 🎉\nSEU PRÊMIO:\n"+dados.premio;
+
+  campo.disabled=true;
+  botao.textContent="CÓDIGO JÁ UTILIZADO";
 
  }catch(erro){
-  resultado.textContent = "❌ " + erro.message;
-  botao.disabled = false;
-  botao.textContent = "TENTAR NOVAMENTE";
-  girando = false;
+
+  resultado.textContent="❌ "+erro.message;
+
+  botao.disabled=false;
+  botao.textContent="▶ TENTAR NOVAMENTE";
+
+  girando=false;
  }
 }
 </script>
+
 </body>
 </html>
-
