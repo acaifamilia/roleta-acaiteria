@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,9 +28,7 @@ body{
  text-align:center;
 }
 
-.topo{
- padding:12px 5px 5px;
-}
+.topo{padding:12px 5px 5px}
 
 .marca{
  font-size:clamp(30px,8vw,43px);
@@ -163,14 +161,8 @@ h2{
  line-height:1.05;
 }
 
-.center .emoji{
- font-size:23px;
-}
-
-.center strong{
- font-size:9px;
- font-weight:1000;
-}
+.center .emoji{font-size:23px}
+.center strong{font-size:9px;font-weight:1000}
 
 .codigo-box{
  margin-top:18px;
@@ -207,9 +199,7 @@ input:focus{
  box-shadow:0 0 10px #ffca44;
 }
 
-input::placeholder{
- color:#a49aa9;
-}
+input::placeholder{color:#a49aa9}
 
 button{
  width:100%;
@@ -272,71 +262,71 @@ button:disabled{
 <body>
 <main class="container">
 
- <header class="topo">
-  <div class="marca">🍇 Açaí da Família Castro</div>
-  <div class="slogan">Sempre mais perto de você! 💛</div>
- </header>
+<header class="topo">
+ <div class="marca">🍇 Açaí da Família Castro</div>
+ <div class="slogan">Sempre mais perto de você! 💛</div>
+</header>
 
- <h1 class="titulo">
-  ROLETA
-  <span>PREMIADA</span>
- </h1>
+<h1 class="titulo">
+ ROLETA
+ <span>PREMIADA</span>
+</h1>
 
- <p class="subtitulo">
-  Compre seu açaí? Você ganhou a chance de concorrer a prêmios!
- </p>
+<p class="subtitulo">
+ Compre seu açaí? Você ganhou a chance de concorrer a prêmios!
+</p>
 
- <div class="faixa">
-  🎁 Sua sorte está aqui!
+<div class="faixa">
+ 🎁 Sua sorte está aqui!
+</div>
+
+<section class="card">
+
+<h2>✨ Gire e descubra seu prêmio! ✨</h2>
+
+<div class="wheel-area">
+ <div class="wheel-border"></div>
+ <div class="pointer"></div>
+
+ <div class="wheel" id="roleta">
+  <svg id="desenho" viewBox="0 0 400 400"></svg>
  </div>
 
- <section class="card">
+ <div class="center">
+  <span class="emoji">🍧</span>
+  <strong>AÇAÍ DA<br>FAMÍLIA</strong>
+ </div>
+</div>
 
-  <h2>✨ Gire e descubra seu prêmio! ✨</h2>
+<div class="codigo-box">
+ <label for="codigo">
+  🎟️ Digite seu código da sorte:
+ </label>
 
-  <div class="wheel-area">
-   <div class="wheel-border"></div>
-   <div class="pointer"></div>
+ <input
+  id="codigo"
+  placeholder="Ex.: ACAI-A82K91"
+  autocomplete="off"
+  maxlength="20"
+ >
+</div>
 
-   <div class="wheel" id="roleta">
-    <svg id="desenho" viewBox="0 0 400 400"></svg>
-   </div>
+<button id="botao" onclick="girar()">
+ ▶ GIRAR A ROLETA!
+</button>
 
-   <div class="center">
-    <span class="emoji">🍧</span>
-    <strong>AÇAÍ DA<br>FAMÍLIA</strong>
-   </div>
-  </div>
+<p id="resultado" role="status"></p>
 
-  <div class="codigo-box">
-   <label for="codigo">
-    🎟️ Digite seu código da sorte:
-   </label>
+<p class="note">
+ 🔒 Cada código dá direito a apenas uma tentativa.
+</p>
 
-   <input
-    id="codigo"
-    placeholder="Ex.: ACAI-A82K91"
-    autocomplete="off"
-    maxlength="20"
-   >
-  </div>
+</section>
 
-  <button id="botao" onclick="girar()">
-   ▶ GIRAR A ROLETA!
-  </button>
-
-  <p id="resultado" role="status"></p>
-
-  <p class="note">
-   🔒 Cada código dá direito a apenas uma tentativa.
-  </p>
-
- </section>
-
- <footer class="rodape">
-  Obrigado pela preferência! 💜<br>
-  Açaí da Família Castro
- </footer>
+<footer class="rodape">
+ Obrigado pela preferência! 💜<br>
+ Açaí da Família Castro
+</footer>
 
 </main>
 
@@ -344,46 +334,47 @@ button:disabled{
 const PREMIOS = [
  {
   nome:"10% de desconto",
-  peso:30,
+  peso:20,
   texto:"10% OFF",
   icone:"🏷️",
   cor:"#f2b936"
  },
  {
   nome:"Açaí pequeno grátis",
-  peso:5,
-  texto:"AÇAÍ",
+  peso:20,
+  texto:"AÇAÍ GRÁTIS",
   icone:"🍧",
   cor:"#df3296"
  },
  {
   nome:"Adicional grátis",
-  peso:25,
+  peso:20,
   texto:"EXTRA GRÁTIS",
   icone:"🎁",
   cor:"#7829a9"
  },
  {
   nome:"R$ 10 de desconto",
-  peso:25,
+  peso:20,
   texto:"R$ 10 OFF",
   icone:"💰",
   cor:"#18a92f"
  },
  {
   nome:"Tente novamente",
-  peso:15,
+  peso:20,
   texto:"TENTE DE NOVO",
   icone:"🔄",
   cor:"#7726a2"
  }
 ];
 
-let girando = false;
-let rotacao = 0;
+let girando=false;
+let rotacao=0;
 
 function ponto(angulo,raio){
  const rad=angulo*Math.PI/180;
+
  return {
   x:200+raio*Math.cos(rad),
   y:200+raio*Math.sin(rad)
@@ -406,19 +397,18 @@ function desenharRoleta(){
 
   const a=ponto(inicio,190);
   const b=ponto(fim,190);
-  const grande=tamanho>180?1:0;
 
   desenho+=`
    <path
     d="M 200 200 L ${a.x} ${a.y}
-    A 190 190 0 ${grande} 1 ${b.x} ${b.y} Z"
+    A 190 190 0 0 1 ${b.x} ${b.y} Z"
     fill="${p.cor}"
     stroke="#fff"
     stroke-width="4"
    />
   `;
 
-  const pos=ponto(meio,132);
+  const pos=ponto(meio,133);
 
   let inclinacao=meio+90;
   inclinacao=((inclinacao%360)+360)%360;
@@ -427,33 +417,31 @@ function desenharRoleta(){
    inclinacao+=180;
   }
 
-  const fonte=p.peso===5?17:19;
-
   desenho+=`
-   <text
-    x="${pos.x}"
-    y="${pos.y-13}"
-    transform="rotate(${inclinacao} ${pos.x} ${pos.y})"
-    text-anchor="middle"
-    dominant-baseline="middle"
-    font-size="15"
-    font-weight="bold"
-    fill="#fff"
-   >${p.icone}</text>
+   <g transform="rotate(${inclinacao} ${pos.x} ${pos.y})">
 
-   <text
-    x="${pos.x}"
-    y="${pos.y+13}"
-    transform="rotate(${inclinacao} ${pos.x} ${pos.y})"
-    text-anchor="middle"
-    dominant-baseline="middle"
-    font-size="${fonte}"
-    font-weight="900"
-    fill="#fff"
-    stroke="#35104f"
-    stroke-width="1.5"
-    paint-order="stroke"
-   >${p.texto}</text>
+    <text
+     x="${pos.x}"
+     y="${pos.y-12}"
+     text-anchor="middle"
+     dominant-baseline="middle"
+     font-size="18"
+    >${p.icone}</text>
+
+    <text
+     x="${pos.x}"
+     y="${pos.y+13}"
+     text-anchor="middle"
+     dominant-baseline="middle"
+     font-size="15"
+     font-weight="900"
+     fill="#fff"
+     stroke="#35104f"
+     stroke-width="1.5"
+     paint-order="stroke"
+    >${p.texto}</text>
+
+   </g>
   `;
 
   inicio=fim;
@@ -507,14 +495,10 @@ async function girar(){
   );
 
   if(indice===-1){
-   throw new Error(
-    "Prêmio não encontrado na roleta."
-   );
+   throw new Error("Prêmio não encontrado na roleta.");
   }
 
-  const total=PREMIOS.reduce(
-   (s,p)=>s+p.peso,0
-  );
+  const total=PREMIOS.reduce((s,p)=>s+p.peso,0);
 
   let inicio=-90;
 
@@ -528,16 +512,13 @@ async function girar(){
   const desejado=-90-meio;
   const atual=((rotacao%360)+360)%360;
 
-  const ajuste=(
-   (desejado-atual)%360+360
-  )%360;
+  const ajuste=((desejado-atual)%360+360)%360;
 
   rotacao+=1800+ajuste;
 
   botao.textContent="BOA SORTE! 🍀";
 
-  roleta.style.transform=
-   "rotate("+rotacao+"deg)";
+  roleta.style.transform="rotate("+rotacao+"deg)";
 
   await new Promise(resolve=>setTimeout(resolve,5200));
 
@@ -561,3 +542,4 @@ async function girar(){
 
 </body>
 </html>
+
