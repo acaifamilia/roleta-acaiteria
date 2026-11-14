@@ -1,11 +1,10 @@
-
  
- const PREMIOS = [
-  { nome: "10% de desconto", peso: 30 },
-  { nome: "R$ 10 de desconto", peso: 25 },
-  { nome: "Açaí pequeno grátis", peso: 5 },
-  { nome: "Adicional grátis", peso: 25 },
-  { nome: "Tente novamente", peso: 15 }
+const PREMIOS = [
+  { nome: "10% de desconto", peso: 20 },
+  { nome: "Açaí pequeno grátis", peso: 20 },
+  { nome: "Adicional grátis", peso: 20 },
+  { nome: "R$ 10 de desconto", peso: 20 },
+  { nome: "Tente novamente", peso: 20 }
 ];
 
 function resposta(dados, status = 200) {
@@ -29,16 +28,19 @@ async function assinar(texto, segredo) {
     false,
     ["sign"]
   );
+
   const assinatura = await crypto.subtle.sign(
     "HMAC",
     chave,
     new TextEncoder().encode(texto)
   );
+
   return btoa(String.fromCharCode(...new Uint8Array(assinatura)));
 }
 
 async function autenticar(request, env) {
   const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+
   if (!token || !env.SESSION_SECRET) return false;
 
   const partes = token.split(".");
@@ -66,6 +68,10 @@ export default {
         return resposta({ erro: "Senha incorreta" }, 401);
       }
 
+      if (!env.SESSION_SECRET) {
+        return resposta({ erro: "Configuração de sessão ausente" }, 500);
+      }
+
       const expiracao = String(Date.now() + 8 * 60 * 60 * 1000);
       const assinatura = await assinar(expiracao, env.SESSION_SECRET);
 
@@ -90,12 +96,15 @@ export default {
       ).bind(nome.trim(), telefone.trim()).first();
 
       let codigo;
+
       for (let i = 0; i < 5; i++) {
         codigo = gerarCodigo();
+
         try {
           await env.DB.prepare(
             "INSERT INTO codigos (codigo, cliente_id) VALUES (?, ?)"
           ).bind(codigo, cliente.id).run();
+
           break;
         } catch (erro) {
           codigo = null;
@@ -106,7 +115,11 @@ export default {
         return resposta({ erro: "Não foi possível gerar o código" }, 500);
       }
 
-      return resposta({ sucesso: true, codigo, cliente_id: cliente.id });
+      return resposta({
+        sucesso: true,
+        codigo,
+        cliente_id: cliente.id
+      });
     }
 
     if (request.method === "GET" && url.pathname === "/api/admin/clientes") {
@@ -124,25 +137,38 @@ export default {
     if (request.method === "POST" && url.pathname === "/api/roleta/girar") {
       const { codigo } = await request.json();
 
-      if (!codigo) return resposta({ erro: "Digite seu código" }, 400);
+      if (!codigo) {
+        return resposta({ erro: "Digite seu código" }, 400);
+      }
 
-      
-const totalPeso = PREMIOS.reduce((total, item) => total + item.peso, 0);
+      const totalPeso = PREMIOS.reduce(
+        (total, item) => total + item.peso,
+        0
+      );
 
-const numero = crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * totalPeso;
+      const numero =
+        crypto.getRandomValues(new Uint32Array(1))[0] /
+        4294967296 *
+        totalPeso;
 
-let acumulado = 0;
-const premio = PREMIOS.find(item => {
-  acumulado += item.peso;
-  return numero < acumulado;
-}).nome;
+      let acumulado = 0;
+
+      const premioSorteado = PREMIOS.find(item => {
+        acumulado += item.peso;
+        return numero < acumulado;
+      });
+
+      const premio = premioSorteado.nome;
 
       const resultado = await env.DB.prepare(`
         UPDATE codigos
         SET usado = 1, premio = ?, usado_em = CURRENT_TIMESTAMP
         WHERE codigo = ? AND usado = 0
         RETURNING premio
-      `).bind(premio, codigo.trim().toUpperCase()).first();
+      `).bind(
+        premio,
+        codigo.trim().toUpperCase()
+      ).first();
 
       if (!resultado) {
         return resposta({
@@ -150,9 +176,13 @@ const premio = PREMIOS.find(item => {
         }, 400);
       }
 
-      return resposta({ sucesso: true, premio: resultado.premio });
+      return resposta({
+        sucesso: true,
+        premio: resultado.premio
+      });
     }
 
-         return env.ASSETS.fetch(request);
+    return env.ASSETS.fetch(request);
   }
 };
+
