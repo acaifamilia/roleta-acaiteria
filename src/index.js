@@ -1,187 +1,505 @@
- 
-const PREMIOS = [
-  { nome: "10% de desconto", peso: 20 },
-  { nome: "Açaí grátis 300ml com leite em pó", peso: 20 },
-  { nome: "Entrega grátis", peso: 20 },
-  { nome: "R$ 10 de desconto", peso: 20 },
-  { nome: "Tente novamente", peso: 20 }
-];
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel Administrativo | Açaí da Família Castro</title>
 
-function resposta(dados, status = 200) {
-  return new Response(JSON.stringify(dados), {
-    status,
-    headers: { "Content-Type": "application/json; charset=utf-8" }
-  });
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(145deg,#170824,#35104f,#64258b);
+  color:#fff;
+  min-height:100vh;
+  padding:20px;
 }
 
-function gerarCodigo() {
-  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const valores = crypto.getRandomValues(new Uint8Array(6));
-  return "ACAI-" + Array.from(valores, n => letras[n % letras.length]).join("");
+main{max-width:1000px;margin:25px auto}
+
+header{text-align:center;margin-bottom:30px}
+
+header h1{font-size:29px;margin-bottom:8px}
+header p{color:#e5d6f2;margin:0}
+
+section{
+  background:#fff;
+  color:#35104f;
+  padding:24px;
+  border-radius:18px;
+  margin-bottom:20px;
+  box-shadow:0 8px 25px #0003;
 }
 
-async function assinar(texto, segredo) {
-  const chave = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(segredo),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
+h2{margin-top:0;font-size:21px}
 
-  const assinatura = await crypto.subtle.sign(
-    "HMAC",
-    chave,
-    new TextEncoder().encode(texto)
-  );
-
-  return btoa(String.fromCharCode(...new Uint8Array(assinatura)));
+input,button{
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  font-size:16px;
+  margin:7px 0;
 }
 
-async function autenticar(request, env) {
-  const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-
-  if (!token || !env.SESSION_SECRET) return false;
-
-  const partes = token.split(".");
-  if (partes.length !== 2) return false;
-
-  const [expiracao, assinatura] = partes;
-  if (Number(expiracao) < Date.now()) return false;
-
-  const esperada = await assinar(expiracao, env.SESSION_SECRET);
-  return assinatura === esperada;
+input{
+  border:1px solid #d8cce1;
+  outline:none;
 }
 
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+input:focus{border-color:#762caf}
 
-    if (request.method === "GET" && url.pathname === "/api/status") {
-      return resposta({ funcionando: true });
-    }
+button{
+  border:0;
+  background:#68269a;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    if (request.method === "POST" && url.pathname === "/api/admin/login") {
-      const { senha } = await request.json();
+button:hover{background:#48156c}
+button:disabled{opacity:.6;cursor:wait}
 
-      if (!env.ADMIN_PASSWORD || senha !== env.ADMIN_PASSWORD) {
-        return resposta({ erro: "Senha incorreta" }, 401);
-      }
+.escondido{display:none}
 
-      if (!env.SESSION_SECRET) {
-        return resposta({ erro: "Configuração de sessão ausente" }, 500);
-      }
+.mensagem{
+  white-space:pre-wrap;
+  font-weight:bold;
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
 
-      const expiracao = String(Date.now() + 8 * 60 * 60 * 1000);
-      const assinatura = await assinar(expiracao, env.SESSION_SECRET);
+.sucesso{color:#168044}
+.erro{color:#c62828}
 
-      return resposta({ token: expiracao + "." + assinatura });
-    }
+.codigo{
+  background:#f1e7fa;
+  padding:16px;
+  border-radius:12px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:2px;
+  margin-top:12px;
+  overflow-wrap:anywhere;
+}
 
-    if (url.pathname.startsWith("/api/admin/")) {
-      if (!(await autenticar(request, env))) {
-        return resposta({ erro: "Acesso não autorizado" }, 401);
-      }
-    }
+.grade{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
 
-    if (request.method === "POST" && url.pathname === "/api/admin/clientes") {
-      const { nome, telefone } = await request.json();
+.card{
+  background:#f5effa;
+  padding:18px;
+  border-radius:13px;
+  text-align:center;
+}
 
-      if (!nome?.trim() || !telefone?.trim()) {
-        return resposta({ erro: "Informe nome e telefone" }, 400);
-      }
+.card span{
+  display:block;
+  font-size:13px;
+  color:#765c85;
+  margin-bottom:8px;
+}
 
-      const cliente = await env.DB.prepare(
-        "INSERT INTO clientes (nome, telefone) VALUES (?, ?) RETURNING id"
-      ).bind(nome.trim(), telefone.trim()).first();
+.card strong{
+  font-size:23px;
+  overflow-wrap:anywhere;
+}
 
-      let codigo;
+.item{
+  padding:15px 0;
+  border-bottom:1px solid #eee;
+  line-height:1.7;
+  overflow-wrap:anywhere;
+}
 
-      for (let i = 0; i < 5; i++) {
-        codigo = gerarCodigo();
+.item:last-child{border:0}
 
-        try {
-          await env.DB.prepare(
-            "INSERT INTO codigos (codigo, cliente_id) VALUES (?, ?)"
-          ).bind(codigo, cliente.id).run();
+small{color:#735d7d}
 
-          break;
-        } catch (erro) {
-          codigo = null;
-        }
-      }
+.filtro{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
 
-      if (!codigo) {
-        return resposta({ erro: "Não foi possível gerar o código" }, 500);
-      }
+.filtro input{flex:1;min-width:180px}
+.filtro button{width:auto;min-width:150px}
 
-      return resposta({
-        sucesso: true,
-        codigo,
-        cliente_id: cliente.id
-      });
-    }
+@media(max-width:650px){
+  body{padding:12px}
+  section{padding:17px}
+  .grade{grid-template-columns:1fr}
+  header h1{font-size:24px}
+  .filtro button{width:100%}
+}
+</style>
+</head>
 
-    if (request.method === "GET" && url.pathname === "/api/admin/clientes") {
-      const resultado = await env.DB.prepare(`
-        SELECT clientes.id, clientes.nome, clientes.telefone,
-               codigos.codigo, codigos.usado, codigos.premio
-        FROM clientes
-        LEFT JOIN codigos ON codigos.cliente_id = clientes.id
-        ORDER BY clientes.id DESC
-      `).all();
+<body>
+<main>
 
-      return resposta(resultado.results);
-    }
+<header>
+  <h1>🍧 Açaí da Família Castro</h1>
+  <p>Painel de gerenciamento e controle de vendas</p>
+</header>
 
-    if (request.method === "POST" && url.pathname === "/api/roleta/girar") {
-      const { codigo } = await request.json();
+<section id="login">
+  <h2>🔐 Acesso administrativo</h2>
+  <input id="senha" type="password" placeholder="Digite sua senha">
+  <button id="botaoEntrar" onclick="entrar()">ENTRAR NO PAINEL</button>
+  <p id="erroLogin" class="mensagem erro"></p>
+</section>
 
-      if (!codigo) {
-        return resposta({ erro: "Digite seu código" }, 400);
-      }
+<div id="painel" class="escondido">
 
-      const totalPeso = PREMIOS.reduce(
-        (total, item) => total + item.peso,
-        0
-      );
+<section>
+  <h2>➕ Cadastrar cliente</h2>
 
-      const numero =
-        crypto.getRandomValues(new Uint32Array(1))[0] /
-        4294967296 *
-        totalPeso;
+  <input id="nome" placeholder="Nome do cliente">
+  <input id="telefone" placeholder="Telefone / WhatsApp" type="tel">
+  <input id="valor" placeholder="Valor da compra (ex.: 35,00)"
+    inputmode="decimal">
 
-      let acumulado = 0;
+  <button id="botaoCadastrar" onclick="cadastrar()">
+    GERAR CÓDIGO E REGISTRAR VENDA
+  </button>
 
-      const premioSorteado = PREMIOS.find(item => {
-        acumulado += item.peso;
-        return numero < acumulado;
-      });
+  <p id="mensagem" class="mensagem"></p>
+  <div id="codigoGerado"></div>
+</section>
 
-      const premio = premioSorteado.nome;
+<section>
+  <h2>📊 Relatório financeiro</h2>
 
-      const resultado = await env.DB.prepare(`
-        UPDATE codigos
-        SET usado = 1, premio = ?, usado_em = CURRENT_TIMESTAMP
-        WHERE codigo = ? AND usado = 0
-        RETURNING premio
-      `).bind(
-        premio,
-        codigo.trim().toUpperCase()
-      ).first();
+  <div class="filtro">
+    <input id="mes" type="month">
+    <button onclick="carregarRelatorio()">CONSULTAR MÊS</button>
+  </div>
 
-      if (!resultado) {
-        return resposta({
-          erro: "Código inválido ou já utilizado"
-        }, 400);
-      }
+  <div class="grade">
+    <div class="card">
+      <span>Faturamento registrado</span>
+      <strong id="totalVendas">R$ 0,00</strong>
+    </div>
 
-      return resposta({
-        sucesso: true,
-        premio: resultado.premio
-      });
-    }
+    <div class="card">
+      <span>Quantidade de vendas</span>
+      <strong id="quantidadeVendas">0</strong>
+    </div>
 
-    return env.ASSETS.fetch(request);
+    <div class="card">
+      <span>Clientes participantes</span>
+      <strong id="quantidadeClientes">0</strong>
+    </div>
+  </div>
+
+  <p id="mensagemRelatorio" class="mensagem"></p>
+</section>
+
+<section>
+  <h2>🧾 Histórico de vendas</h2>
+  <div id="historico">Selecione um mês para consultar.</div>
+</section>
+
+<section>
+  <h2>📋 Clientes cadastrados</h2>
+  <button onclick="carregarClientes()">ATUALIZAR CLIENTES</button>
+  <div id="lista">Carregando...</div>
+</section>
+
+</div>
+</main>
+
+<script>
+let token = "";
+
+const moeda = new Intl.NumberFormat("pt-BR", {
+  style:"currency",
+  currency:"BRL"
+});
+
+function dinheiro(valor) {
+  return moeda.format((Number(valor) || 0) / 100);
+}
+
+function converterCentavos(texto) {
+  let valor = texto.trim()
+    .replace(/R\$/gi, "")
+    .replace(/\s/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+  const numero = Number(valor);
+
+  if (!Number.isFinite(numero) || numero <= 0) {
+    return null;
   }
-};
+
+  const centavos = Math.round(numero * 100);
+
+  if (!Number.isSafeInteger(centavos) || centavos <= 0) {
+    return null;
+  }
+
+  return centavos;
+}
+
+async function requisicao(url, opcoes = {}) {
+  opcoes.headers = {
+    "Content-Type":"application/json",
+    ...(opcoes.headers || {})
+  };
+
+  if(token) {
+    opcoes.headers.Authorization = "Bearer " + token;
+  }
+
+  const resposta = await fetch(url, opcoes);
+
+  let dados;
+
+  try {
+    dados = await resposta.json();
+  } catch {
+    throw new Error("Resposta inválida do servidor.");
+  }
+
+  if(!resposta.ok) {
+    throw new Error(dados.erro || "Ocorreu um erro.");
+  }
+
+  return dados;
+}
+
+async function entrar() {
+  const erro = document.getElementById("erroLogin");
+  const botao = document.getElementById("botaoEntrar");
+
+  erro.textContent = "Verificando acesso...";
+  botao.disabled = true;
+
+  try {
+    const dados = await requisicao("/api/admin/login", {
+      method:"POST",
+      body:JSON.stringify({
+        senha:document.getElementById("senha").value
+      })
+    });
+
+    token = dados.token;
+
+    document.getElementById("login").classList.add("escondido");
+    document.getElementById("painel").classList.remove("escondido");
+
+    carregarClientes();
+    carregarRelatorio();
+
+  } catch(e) {
+    erro.textContent = e.message;
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function cadastrar() {
+  const mensagem = document.getElementById("mensagem");
+  const codigoGerado = document.getElementById("codigoGerado");
+  const botao = document.getElementById("botaoCadastrar");
+
+  const nome = document.getElementById("nome").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  const valorTexto = document.getElementById("valor").value;
+  const valor_centavos = converterCentavos(valorTexto);
+
+  codigoGerado.textContent = "";
+
+  if(!nome || !telefone || valor_centavos === null) {
+    mensagem.className = "mensagem erro";
+    mensagem.textContent =
+      "Preencha nome, telefone e um valor de compra válido.";
+    return;
+  }
+
+  mensagem.className = "mensagem";
+  mensagem.textContent = "Registrando cliente e gerando código...";
+  botao.disabled = true;
+
+  try {
+    const dados = await requisicao("/api/admin/clientes", {
+      method:"POST",
+      body:JSON.stringify({
+        nome,
+        telefone,
+        valor_centavos
+      })
+    });
+
+    mensagem.className = "mensagem sucesso";
+    mensagem.textContent =
+      "✅ Cliente cadastrado e venda registrada com sucesso!\nValor: " +
+      dinheiro(dados.valor_centavos);
+
+    const codigo = document.createElement("div");
+    codigo.className = "codigo";
+    codigo.textContent = dados.codigo;
+    codigoGerado.appendChild(codigo);
+
+    document.getElementById("nome").value = "";
+    document.getElementById("telefone").value = "";
+    document.getElementById("valor").value = "";
+
+    carregarClientes();
+    carregarRelatorio();
+
+  } catch(e) {
+    mensagem.className = "mensagem erro";
+    mensagem.textContent = "Erro: " + e.message;
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function carregarClientes() {
+  const lista = document.getElementById("lista");
+  lista.textContent = "Carregando clientes...";
+
+  try {
+    const clientes = await requisicao("/api/admin/clientes");
+
+    lista.replaceChildren();
+
+    if(!clientes.length) {
+      lista.textContent = "Nenhum cliente cadastrado.";
+      return;
+    }
+
+    clientes.forEach(cliente => {
+      const item = document.createElement("div");
+      item.className = "item";
+
+      const nome = document.createElement("strong");
+      nome.textContent = cliente.nome;
+
+      const telefone = document.createElement("div");
+      telefone.textContent = "Telefone: " + cliente.telefone;
+
+      const codigo = document.createElement("div");
+      codigo.textContent = "Código: " + (cliente.codigo || "Sem código");
+
+      const status = document.createElement("small");
+      status.textContent = cliente.usado
+        ? " • Código já utilizado"
+        : " • Código disponível";
+
+      item.append(nome, telefone, codigo, status);
+
+      if(cliente.premio) {
+        const premio = document.createElement("div");
+        premio.textContent = "Prêmio: " + cliente.premio;
+        item.appendChild(premio);
+      }
+
+      lista.appendChild(item);
+    });
+
+  } catch(e) {
+    lista.textContent = "Erro ao carregar clientes: " + e.message;
+  }
+}
+
+function formatarData(data) {
+  if(!data) return "Data não informada";
+
+  const partes = data.split(" ");
+  const dia = partes[0].split("-");
+
+  if(dia.length !== 3) return data;
+
+  return dia[2] + "/" + dia[1] + "/" + dia[0] +
+    (partes[1] ? " às " + partes[1] : "");
+}
+
+async function carregarRelatorio() {
+  const mes = document.getElementById("mes").value;
+  const mensagem = document.getElementById("mensagemRelatorio");
+  const historico = document.getElementById("historico");
+
+  if(!mes) {
+    mensagem.textContent = "Selecione um mês.";
+    return;
+  }
+
+  mensagem.textContent = "Consultando relatório...";
+  historico.textContent = "Carregando vendas...";
+
+  try {
+    const resumo = await requisicao(
+      "/api/admin/resumo?mes=" + encodeURIComponent(mes)
+    );
+
+    document.getElementById("totalVendas").textContent =
+      dinheiro(resumo.total_centavos);
+
+    document.getElementById("quantidadeVendas").textContent =
+      resumo.total_vendas || 0;
+
+    document.getElementById("quantidadeClientes").textContent =
+      resumo.total_clientes || 0;
+
+    const vendas = await requisicao(
+      "/api/admin/vendas?mes=" + encodeURIComponent(mes)
+    );
+
+    historico.replaceChildren();
+
+    if(!vendas.length) {
+      historico.textContent = "Nenhuma venda registrada neste mês.";
+    } else {
+      vendas.forEach(venda => {
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const nome = document.createElement("strong");
+        nome.textContent = venda.nome;
+
+        const valor = document.createElement("div");
+        valor.textContent = "Valor: " + dinheiro(venda.valor_centavos);
+
+        const telefone = document.createElement("div");
+        telefone.textContent = "Telefone: " + venda.telefone;
+
+        const data = document.createElement("small");
+        data.textContent = formatarData(venda.data_venda);
+
+        item.append(nome, valor, telefone, data);
+        historico.appendChild(item);
+      });
+    }
+
+    mensagem.textContent = "Relatório atualizado com sucesso.";
+
+  } catch(e) {
+    mensagem.textContent = "Erro: " + e.message;
+    historico.textContent = "Não foi possível carregar o histórico.";
+  }
+}
+
+function iniciarMes() {
+  const agora = new Date();
+  const mes = agora.getFullYear() + "-" +
+    String(agora.getMonth() + 1).padStart(2, "0");
+
+  document.getElementById("mes").value = mes;
+}
+
+iniciarMes();
+</script>
+
+</body>
+</html>
