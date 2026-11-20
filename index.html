@@ -1,4 +1,5 @@
  
+ 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,537 +8,610 @@
 <title>Roleta Premiada | Açaí da Família Castro</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
- margin:0;
- font-family:Arial,sans-serif;
- color:white;
- min-height:100vh;
- background:
- radial-gradient(ellipse at 50% 20%,#65218b 0%,transparent 48%),
- linear-gradient(150deg,#160321,#310b49,#190522);
- overflow-x:hidden;
- padding:20px 12px 35px;
+* {
+  box-sizing: border-box;
 }
 
-.container{
- width:100%;
- max-width:480px;
- margin:auto;
- text-align:center;
+:root {
+  --purple: #200b3d;
+  --purple2: #381064;
+  --gold: #ffd76a;
+  --gold2: #fff0b0;
+  --white: #ffffff;
 }
 
-.topo{padding:12px 5px 5px}
-
-.marca{
- font-size:clamp(30px,8vw,43px);
- font-weight:1000;
- color:#ffd34e;
- text-shadow:0 3px 0 #70218d,0 0 18px #ffca45;
- line-height:1.1;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background:
+    radial-gradient(circle at 50% 0%, #6425a0 0%, transparent 40%),
+    linear-gradient(145deg, #10051e, #24083d 55%, #12051f);
+  overflow-x: hidden;
 }
 
-.slogan{
- font-size:15px;
- color:#fff0c9;
- font-style:italic;
- margin-top:10px;
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .18;
+  background-image:
+    radial-gradient(circle, #ffffff 1px, transparent 1.5px);
+  background-size: 35px 35px;
 }
 
-.titulo{
- margin:22px 0 5px;
- font-size:clamp(38px,10vw,53px);
- font-weight:1000;
- line-height:1;
- color:white;
- text-shadow:3px 4px 0 #54106e,0 0 15px #d99bff;
+header {
+  text-align: center;
+  padding: 25px 15px 10px;
 }
 
-.titulo span{
- display:block;
- color:#ffbd19;
- font-size:1.05em;
- text-shadow:3px 4px 0 #773000,0 0 18px #ffae00;
+.logo {
+  font-size: clamp(24px, 5vw, 38px);
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 18px #ffcb5a55;
 }
 
-.subtitulo{
- font-size:15px;
- line-height:1.5;
- color:white;
- margin:15px auto 18px;
- max-width:390px;
+.slogan {
+  margin-top: 8px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #ead9ff;
 }
 
-.faixa{
- background:linear-gradient(90deg,#6b1592,#310849,#6b1592);
- border:2px solid #e6b7ff;
- border-radius:40px;
- padding:13px 10px;
- font-size:21px;
- font-weight:bold;
- color:white;
- box-shadow:0 5px 15px #0006;
- margin-bottom:12px;
+main {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  padding: 15px;
 }
 
-.card{
- background:linear-gradient(150deg,#35104b,#1d092b);
- border:2px solid #dba83d;
- border-radius:28px;
- padding:20px 13px;
- box-shadow:0 0 22px #dca43c40,0 15px 35px #0008;
+.title {
+  text-align: center;
+  margin: 15px 0 25px;
 }
 
-h2{
- color:#ffdc7b;
- font-size:23px;
- margin:4px 0 0;
+.title h1 {
+  margin: 0;
+  font-size: clamp(30px, 7vw, 48px);
+  font-weight: 1000;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-shadow: 0 3px 0 #7e4800, 0 0 22px #ffc94d44;
 }
 
-.wheel-area{
- width:min(350px,85vw);
- height:min(350px,85vw);
- margin:35px auto 30px;
- position:relative;
+.title p {
+  color: #e8d5ff;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
-.wheel-border{
- position:absolute;
- inset:-10px;
- border-radius:50%;
- background:linear-gradient(135deg,#fff2a1,#e8a51c,#fff0a0,#bd7910);
- box-shadow:0 0 12px #ffdf79,0 0 28px #ffba36;
+.card {
+  position: relative;
+  padding: 24px 18px 28px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #3b1264, #210b3d);
+  border: 2px solid #e4b849;
+  box-shadow:
+    0 0 0 5px #e5bb4a15,
+    0 15px 45px #00000065,
+    inset 0 0 30px #ffffff08;
 }
 
-.wheel{
- position:absolute;
- inset:0;
- border-radius:50%;
- border:5px solid #fff0a0;
- overflow:hidden;
- background:#fff;
- transition:transform 5s cubic-bezier(.12,.75,.15,1);
- z-index:2;
+.wheel-area {
+  width: min(100%, 440px);
+  margin: 10px auto 25px;
+  position: relative;
+  aspect-ratio: 1;
 }
 
-.wheel svg{
- width:100%;
- height:100%;
- display:block;
+.wheel-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 10px;
+  background: linear-gradient(135deg, #fff2a9, #c78b20, #fff0a5, #a66c10);
+  box-shadow:
+    0 0 0 4px #5b3185,
+    0 0 30px #ffce5555,
+    0 12px 25px #0008;
 }
 
-.pointer{
- position:absolute;
- top:-21px;
- left:50%;
- transform:translateX(-50%);
- z-index:6;
- width:0;
- height:0;
- border-left:22px solid transparent;
- border-right:22px solid transparent;
- border-top:43px solid #ffcb34;
- filter:drop-shadow(0 3px 4px #000);
+#wheel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform: rotate(0deg);
+  transition: transform 6s cubic-bezier(.12,.72,.08,1);
+  filter: drop-shadow(0 3px 5px #0005);
 }
 
-.center{
- position:absolute;
- top:50%;
- left:50%;
- transform:translate(-50%,-50%);
- width:83px;
- height:83px;
- border-radius:50%;
- background:linear-gradient(145deg,#fff4c4,#dba52e);
- border:5px solid white;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- z-index:4;
- color:#46145c;
- box-shadow:0 0 15px #ffd96d;
- line-height:1.05;
+.pointer {
+  position: absolute;
+  z-index: 5;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 19px solid transparent;
+  border-right: 19px solid transparent;
+  border-top: 38px solid #fff1a2;
+  filter: drop-shadow(0 4px 3px #0008);
 }
 
-.center .emoji{font-size:23px}
-.center strong{font-size:9px;font-weight:1000}
-
-.codigo-box{
- margin-top:18px;
- padding:16px 12px;
- border:2px solid #a83bd1;
- border-radius:24px;
- background:linear-gradient(145deg,#280a3c,#190523);
- box-shadow:0 0 15px #a83bd150;
+.pointer::after {
+  content: "";
+  position: absolute;
+  top: -39px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #fffbd3, #d59a28);
+  border-radius: 50%;
+  border: 2px solid #8b5a0c;
 }
 
-label{
- display:block;
- font-size:18px;
- font-weight:bold;
- color:white;
- margin-bottom:12px;
+.center-decoration {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 85px;
+  height: 85px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #fff3b4, #e1a832, #a56b0c);
+  border: 5px solid #fff0a1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 4px 15px #0008, 0 0 25px #ffd65a66;
+  z-index: 3;
+  pointer-events: none;
 }
 
-input{
- width:100%;
- padding:16px 14px;
- border:2px solid #e5d6f0;
- border-radius:15px;
- background:#fffaff;
- color:#351044;
- font-size:18px;
- font-weight:bold;
- outline:none;
- text-align:center;
+.form-area {
+  text-align: center;
 }
 
-input:focus{
- border-color:#ffcc43;
- box-shadow:0 0 10px #ffca44;
+.label {
+  color: #ffe8a0;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
-input::placeholder{color:#a49aa9}
-
-button{
- width:100%;
- padding:17px 10px;
- margin-top:14px;
- border:2px solid #ffe58a;
- border-radius:50px;
- background:linear-gradient(180deg,#ffdc48,#ffad00);
- color:#421052;
- font-size:clamp(18px,5vw,25px);
- font-weight:1000;
- cursor:pointer;
- box-shadow:0 5px 0 #a76500,0 8px 20px #0006;
- text-shadow:0 1px 0 #fff4b4;
+input {
+  width: 100%;
+  max-width: 420px;
+  display: block;
+  margin: auto;
+  padding: 16px;
+  border-radius: 14px;
+  border: 2px solid #d9aa42;
+  background: #18082b;
+  color: white;
+  outline: none;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-button:active{
- transform:translateY(3px);
- box-shadow:0 2px 0 #a76500;
+input:focus {
+  border-color: #fff0a2;
+  box-shadow: 0 0 15px #ffd75a33;
 }
 
-button:disabled{
- opacity:.6;
- cursor:not-allowed;
+input::placeholder {
+  color: #b8a0d1;
 }
 
-#resultado{
- font-size:21px;
- font-weight:1000;
- color:#ffdc67;
- line-height:1.5;
- white-space:pre-wrap;
- margin-top:18px;
+#spinButton {
+  width: 100%;
+  max-width: 420px;
+  display: block;
+  margin: 18px auto 0;
+  padding: 17px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #ffe88b, #e9b43b, #ffdf6b);
+  color: #3b1855;
+  font-size: 18px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #976719, 0 10px 25px #0005;
+  transition: transform .15s, filter .2s;
 }
 
-.note{
- color:#e7c9f2;
- font-size:12px;
- margin-top:17px;
+#spinButton:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
 }
 
-.rodape{
- margin-top:22px;
- font-size:14px;
- color:#f5d7ff;
+#spinButton:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 #976719;
 }
 
-@media(max-width:360px){
- .card{padding:17px 10px}
- h2{font-size:20px}
- label{font-size:16px}
- .wheel-area{
-  width:80vw;
-  height:80vw;
- }
+#spinButton:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+  transform: none;
+}
+
+#result {
+  margin-top: 20px;
+  text-align: center;
+  padding: 20px;
+  border-radius: 18px;
+  display: none;
+  background: linear-gradient(145deg, #fff0a8, #e6b544);
+  color: #35164e;
+  font-weight: 900;
+  box-shadow: 0 0 25px #ffdb6a44;
+  animation: aparecer .5s ease;
+}
+
+#result .result-title {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+#result .result-prize {
+  font-size: clamp(22px, 5vw, 30px);
+}
+
+#result .result-message {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#message {
+  min-height: 22px;
+  margin-top: 14px;
+  text-align: center;
+  color: #ffe9a0;
+  font-size: 13px;
+}
+
+.footer {
+  text-align: center;
+  padding: 22px 10px;
+  font-size: 12px;
+  color: #cbb5e7;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding-top: 20px;
+  }
+
+  .card {
+    padding: 20px 12px;
+    border-radius: 22px;
+  }
+
+  .wheel-area {
+    width: 100%;
+  }
+
+  .wheel-frame {
+    padding: 7px;
+  }
+
+  .center-decoration {
+    width: 68px;
+    height: 68px;
+    font-size: 29px;
+  }
+
+  #spinButton {
+    font-size: 16px;
+  }
 }
 </style>
 </head>
 
 <body>
-<main class="container">
 
-<header class="topo">
- <div class="marca">🍇 Açaí da Família Castro</div>
- <div class="slogan">Sempre mais perto de você! 💛</div>
+<header>
+  <div class="logo">🍇 Açaí da Família Castro</div>
+  <div class="slogan">SEMPRE MAIS PERTO DE VOCÊ! 💛</div>
 </header>
 
-<h1 class="titulo">
- ROLETA
- <span>PREMIADA</span>
-</h1>
+<main>
 
-<p class="subtitulo">
- Compre seu açaí? Você ganhou a chance de concorrer a prêmios!
-</p>
+  <div class="title">
+    <h1>ROLETA PREMIADA</h1>
+    <p>Digite seu código e descubra seu prêmio!</p>
+  </div>
 
-<div class="faixa">
- 🎁 Sua sorte está aqui!
-</div>
+  <div class="card">
 
-<section class="card">
+    <div class="wheel-area">
 
-<h2>✨ Gire e descubra seu prêmio! ✨</h2>
+      <div class="pointer"></div>
 
-<div class="wheel-area">
- <div class="wheel-border"></div>
- <div class="pointer"></div>
+      <div class="wheel-frame">
+        <canvas id="wheel" width="800" height="800"></canvas>
+      </div>
 
- <div class="wheel" id="roleta">
-  <svg id="desenho" viewBox="0 0 400 400"></svg>
- </div>
+      <div class="center-decoration">🍧</div>
 
- <div class="center">
-  <span class="emoji">🍧</span>
-  <strong>AÇAÍ DA<br>FAMÍLIA</strong>
- </div>
-</div>
+    </div>
 
-<div class="codigo-box">
- <label for="codigo">
-  🎟️ Digite seu código da sorte:
- </label>
+    <div class="form-area">
 
- <input
-  id="codigo"
-  placeholder="Ex.: ACAI-A82K91"
-  autocomplete="off"
-  maxlength="20"
- >
-</div>
+      <div class="label">🎁 DIGITE SEU CÓDIGO DA SORTE</div>
 
-<button id="botao" onclick="girar()">
- ▶ GIRAR A ROLETA!
-</button>
+      <input
+        id="codigo"
+        type="text"
+        placeholder="EX.: ACAI-A82K91"
+        maxlength="20"
+        autocomplete="off"
+      >
 
-<p id="resultado" role="status"></p>
+      <button id="spinButton" onclick="girar()">
+        🎰 GIRAR A ROLETA!
+      </button>
 
-<p class="note">
- 🔒 Cada código dá direito a apenas uma tentativa.
-</p>
+      <div id="message"></div>
 
-</section>
+      <div id="result">
+        <div class="result-title">✨ SEU PRÊMIO É ✨</div>
+        <div class="result-prize" id="prizeText"></div>
+        <div class="result-message">
+          💜 Obrigado por comprar no Açaí da Família Castro!
+        </div>
+      </div>
 
-<footer class="rodape">
- Obrigado pela preferência! 💜<br>
- Açaí da Família Castro
-</footer>
+    </div>
+
+  </div>
 
 </main>
 
+<div class="footer">
+  🍇 Açaí da Família Castro • Boa sorte! 💜
+</div>
+
 <script>
-const PREMIOS = [
- {
-  nome:"10% de desconto",
-  peso:20,
-  texto:"10% OFF",
-  icone:"🏷️",
-  cor:"#f2b936"
- },
- {
-  nome:"Açaí grátis 300ml com leite em pó",
-  peso:20,
-  texto:"AÇAÍ 300ML",
-  icone:"🍧",
-  cor:"#df3296"
- },
- {
-  nome:"Entrega grátis",
-  peso:20,
-  texto:"ENTREGA GRÁTIS",
-  icone:"🛵",
-  cor:"#7829a9"
- },
- {
-  nome:"R$ 10 de desconto",
-  peso:20,
-  texto:"R$ 10 OFF",
-  icone:"💰",
-  cor:"#18a92f"
- },
- {
-  nome:"Tente novamente",
-  peso:20,
-  texto:"TENTE DE NOVO",
-  icone:"🔄",
-  cor:"#7726a2"
- }
+const premios = [
+  { nome: "10% de desconto", texto: "10% OFF", emoji: "🏷️", cor: "#7b36bb" },
+  { nome: "Açaí pequeno grátis", texto: "AÇAÍ 300 ML GRÁTIS", emoji: "🍧", cor: "#b52b87" },
+  { nome: "Adicional grátis", texto: "ADICIONAL GRÁTIS", emoji: "🥜", cor: "#7134bd" },
+  { nome: "R$ 5 de desconto", texto: "R$ 5 OFF", emoji: "💰", cor: "#cb3180" },
+  { nome: "Fruta grátis", texto: "FRUTA GRÁTIS", emoji: "🍓", cor: "#8632bd" },
+  { nome: "Entrega grátis", texto: "ENTREGA GRÁTIS", emoji: "🛵", cor: "#a82a8d" },
+  { nome: "R$ 5 de desconto", texto: "R$ 5 OFF", emoji: "💵", cor: "#7336ba" },
+  { nome: "R$ 10 de desconto", texto: "R$ 10 OFF", emoji: "💸", cor: "#c22d82" },
+  { nome: "Entrega grátis", texto: "ENTREGA GRÁTIS", emoji: "🛵", cor: "#8831b8" },
+  { nome: "Tente novamente", texto: "TENTE DE NOVO", emoji: "🔄", cor: "#5d2999" }
 ];
 
-let girando=false;
-let rotacao=0;
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
 
-function ponto(angulo,raio){
- const rad=angulo*Math.PI/180;
+const total = premios.length;
+const fatia = (Math.PI * 2) / total;
+const centro = canvas.width / 2;
+const raio = centro - 8;
 
- return {
-  x:200+raio*Math.cos(rad),
-  y:200+raio*Math.sin(rad)
- };
-}
+function desenharRoleta() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function desenharRoleta(){
+  premios.forEach((premio, i) => {
+    const inicio = -Math.PI / 2 + i * fatia;
+    const fim = inicio + fatia;
 
- const svg=document.getElementById("desenho");
- const total=PREMIOS.reduce((s,p)=>s+p.peso,0);
+    ctx.beginPath();
+    ctx.moveTo(centro, centro);
+    ctx.arc(centro, centro, raio, inicio, fim);
+    ctx.closePath();
 
- let inicio=-90;
- let desenho="";
+    const gradiente = ctx.createRadialGradient(
+      centro, centro, 80,
+      centro, centro, raio
+    );
 
- PREMIOS.forEach(p=>{
+    gradiente.addColorStop(0, premio.cor);
+    gradiente.addColorStop(1, "#26083f");
 
-  const tamanho=p.peso/total*360;
-  const fim=inicio+tamanho;
-  const meio=inicio+tamanho/2;
+    ctx.fillStyle = gradiente;
+    ctx.fill();
 
-  const a=ponto(inicio,190);
-  const b=ponto(fim,190);
+    ctx.strokeStyle = "#f8d775";
+    ctx.lineWidth = 5;
+    ctx.stroke();
 
-  desenho+=`
-   <path
-    d="M 200 200 L ${a.x} ${a.y}
-    A 190 190 0 0 1 ${b.x} ${b.y} Z"
-    fill="${p.cor}"
-    stroke="#fff"
-    stroke-width="4"
-   />
-  `;
+    const angulo = inicio + fatia / 2;
 
-  const pos=ponto(meio,133);
+    ctx.save();
+    ctx.translate(centro, centro);
+    ctx.rotate(angulo);
 
-  let inclinacao=meio+90;
-  inclinacao=((inclinacao%360)+360)%360;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-  if(inclinacao>90&&inclinacao<270){
-   inclinacao+=180;
+    ctx.fillStyle = "#fff2bd";
+    ctx.font = "bold 36px Arial";
+    ctx.fillText(premio.emoji, raio * 0.68, 0);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px Arial";
+
+    const texto = premio.texto;
+    const maxWidth = 190;
+
+    const palavras = texto.split(" ");
+    let linhas = [];
+    let linha = "";
+
+    palavras.forEach(palavra => {
+      const teste = linha ? linha + " " + palavra : palavra;
+
+      if (ctx.measureText(teste).width > maxWidth && linha) {
+        linhas.push(linha);
+        linha = palavra;
+      } else {
+        linha = teste;
+      }
+    });
+
+    if (linha) linhas.push(linha);
+
+    const posTexto = raio * 0.43;
+    const alturaLinha = 26;
+    const inicioTexto = -((linhas.length - 1) * alturaLinha) / 2;
+
+    linhas.forEach((l, index) => {
+      ctx.fillText(l, posTexto, inicioTexto + index * alturaLinha);
+    });
+
+    ctx.restore();
+  });
+
+  // Borda externa
+  ctx.beginPath();
+  ctx.arc(centro, centro, raio, 0, Math.PI * 2);
+  ctx.strokeStyle = "#ffe99a";
+  ctx.lineWidth = 10;
+  ctx.stroke();
+
+  // Pontos dourados decorativos
+  for (let i = 0; i < 40; i++) {
+    const angulo = (Math.PI * 2 / 40) * i;
+    const x = centro + Math.cos(angulo) * (raio - 4);
+    const y = centro + Math.sin(angulo) * (raio - 4);
+
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff2b0";
+    ctx.fill();
   }
-
-  desenho+=`
-   <g transform="rotate(${inclinacao} ${pos.x} ${pos.y})">
-
-    <text
-     x="${pos.x}"
-     y="${pos.y-12}"
-     text-anchor="middle"
-     dominant-baseline="middle"
-     font-size="18"
-    >${p.icone}</text>
-
-    <text
-     x="${pos.x}"
-     y="${pos.y+13}"
-     text-anchor="middle"
-     dominant-baseline="middle"
-     font-size="15"
-     font-weight="900"
-     fill="#fff"
-     stroke="#35104f"
-     stroke-width="1.5"
-     paint-order="stroke"
-    >${p.texto}</text>
-
-   </g>
-  `;
-
-  inicio=fim;
- });
-
- svg.innerHTML=desenho;
 }
 
 desenharRoleta();
 
-async function girar(){
+let girando = false;
+let rotacaoAtual = 0;
 
- if(girando)return;
-
- const campo=document.getElementById("codigo");
- const botao=document.getElementById("botao");
- const resultado=document.getElementById("resultado");
- const roleta=document.getElementById("roleta");
-
- const codigo=campo.value.trim().toUpperCase();
-
- if(!codigo){
-  resultado.textContent="Digite seu código da sorte!";
-  campo.focus();
-  return;
- }
-
- girando=true;
- botao.disabled=true;
- botao.textContent="VALIDANDO CÓDIGO...";
- resultado.textContent="";
-
- try{
-
-  const resposta=await fetch("/api/roleta/girar",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({codigo})
-  });
-
-  const dados=await resposta.json();
-
-  if(!resposta.ok){
-   throw new Error(
-    dados.erro||"Não foi possível validar seu código."
-   );
-  }
-
-  const indice=PREMIOS.findIndex(
-   p=>p.nome===dados.premio
-  );
-
-  if(indice===-1){
-   throw new Error("Prêmio não encontrado na roleta.");
-  }
-
-  const total=PREMIOS.reduce((s,p)=>s+p.peso,0);
-
-  let inicio=-90;
-
-  for(let i=0;i<indice;i++){
-   inicio+=PREMIOS[i].peso/total*360;
-  }
-
-  const tamanho=PREMIOS[indice].peso/total*360;
-  const meio=inicio+tamanho/2;
-
-  const desejado=-90-meio;
-  const atual=((rotacao%360)+360)%360;
-
-  const ajuste=((desejado-atual)%360+360)%360;
-
-  rotacao+=1800+ajuste;
-
-  botao.textContent="BOA SORTE! 🍀";
-
-  roleta.style.transform="rotate("+rotacao+"deg)";
-
-  await new Promise(resolve=>setTimeout(resolve,5200));
-
-  resultado.textContent=
-   "🎉 PARABÉNS! 🎉\nSEU PRÊMIO:\n"+dados.premio;
-
-  campo.disabled=true;
-  botao.textContent="CÓDIGO JÁ UTILIZADO";
-
- }catch(erro){
-
-  resultado.textContent="❌ "+erro.message;
-
-  botao.disabled=false;
-  botao.textContent="▶ TENTAR NOVAMENTE";
-
-  girando=false;
- }
+function mostrarMensagem(texto) {
+  document.getElementById("message").textContent = texto;
 }
+
+function encontrarIndices(nomePremio) {
+  return premios
+    .map((premio, index) => premio.nome === nomePremio ? index : -1)
+    .filter(index => index !== -1);
+}
+
+async function girar() {
+  if (girando) return;
+
+  const campo = document.getElementById("codigo");
+  const codigo = campo.value.trim().toUpperCase();
+  const botao = document.getElementById("spinButton");
+  const resultado = document.getElementById("result");
+
+  resultado.style.display = "none";
+  mostrarMensagem("");
+
+  if (!codigo) {
+    mostrarMensagem("⚠️ Digite seu código para girar!");
+    campo.focus();
+    return;
+  }
+
+  girando = true;
+  botao.disabled = true;
+  botao.textContent = "✨ SUA ROLETA ESTÁ GIRANDO...";
+
+  try {
+    const resposta = await fetch("/api/roleta/girar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ codigo })
+    });
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok || !dados.sucesso) {
+      mostrarMensagem("❌ " + (dados.erro || "Código inválido."));
+      girando = false;
+      botao.disabled = false;
+      botao.textContent = "🎰 GIRAR A ROLETA!";
+      return;
+    }
+
+    const indices = encontrarIndices(dados.premio);
+
+    if (!indices.length) {
+      mostrarMensagem("⚠️ Prêmio recebido, mas não encontrado na roleta. Avise o atendimento.");
+      girando = false;
+      botao.disabled = false;
+      botao.textContent = "🎰 GIRAR A ROLETA!";
+      return;
+    }
+
+    // Se o prêmio aparece mais de uma vez, escolhe uma das casas.
+    const indicePremio = indices[Math.floor(Math.random() * indices.length)];
+
+    // O centro da casa escolhida ficará alinhado com o ponteiro.
+    const anguloCentro = -90 + (indicePremio * 36) + 18;
+    const destino = -90 - anguloCentro;
+
+    // Acrescenta várias voltas completas para a animação.
+    const voltas = 360 * 6;
+    rotacaoAtual = rotacaoAtual + voltas + destino;
+
+    canvas.style.transform = "rotate(" + rotacaoAtual + "deg)";
+
+    setTimeout(() => {
+      const premio = premios[indicePremio];
+
+      document.getElementById("prizeText").textContent =
+        premio.emoji + " " + premio.texto;
+
+      resultado.style.display = "block";
+      mostrarMensagem("💜 Parabéns! Seu código foi utilizado.");
+
+      botao.disabled = false;
+      botao.textContent = "🎰 GIRAR A ROLETA!";
+      girando = false;
+
+      // Limpa o código para evitar novo envio acidental.
+      campo.value = "";
+    }, 6200);
+
+  } catch (erro) {
+    mostrarMensagem("❌ Erro de conexão. Tente novamente.");
+    girando = false;
+    botao.disabled = false;
+    botao.textContent = "🎰 GIRAR A ROLETA!";
+  }
+}
+
+document.getElementById("codigo").addEventListener("keydown", function(event) {
+  if (event.key === "Enter" && !girando) {
+    girar();
+  }
+});
 </script>
 
 </body>
